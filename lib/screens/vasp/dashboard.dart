@@ -15,22 +15,22 @@ class VaspDashboard extends StatelessWidget {
       backgroundColor: AppTheme.backgroundColor,
       appBar: AppBar(
         backgroundColor: AppTheme.primaryGreen,
-        title: Text('VASP Dashboard'),
+        title: const Text('VASP Dashboard'),
         actions: [
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
             onPressed: () async {
               await userProvider.signOut();
               if (context.mounted) {
                 Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (_) => LoginScreen()),
+                  MaterialPageRoute(builder: (_) => const LoginScreen()),
                 );
               }
             },
           ),
         ],
       ),
-      body: Center(child: Text('VASP Dashboard - Coming Soon')),
+      body: const Center(child: Text('VASP Dashboard - Coming Soon')),
     );
   }
 }

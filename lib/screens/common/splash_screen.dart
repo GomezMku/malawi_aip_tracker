@@ -21,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen>
     super.initState();
 
     _controller = AnimationController(
-      duration: Duration(milliseconds: 1500),
+      duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
 
@@ -39,9 +39,9 @@ class _SplashScreenState extends State<SplashScreen>
 
     Future.delayed(AppConstants.splashDuration, () {
       if (mounted) {
-        Navigator.of(
-          context,
-        ).pushReplacement(MaterialPageRoute(builder: (_) => LoginScreen()));
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const LoginScreen()),
+        );
       }
     });
   }
@@ -70,30 +70,24 @@ class _SplashScreenState extends State<SplashScreen>
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: AppTheme.white,
-                    boxShadow: [
+                    boxShadow: const [
                       BoxShadow(
-                        color: AppTheme.primaryGreen.withOpacity(0.1),
+                        color: Color(0x1A1B5E20),
                         blurRadius: 30,
                         spreadRadius: 10,
                       ),
                     ],
                   ),
-                  child: Padding(
+                  child: const Padding(
                     padding: EdgeInsets.all(20),
-                    child: Image.asset(
-                      'assets/images/logos/logo.png',
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Icon(
-                          Icons.eco,
-                          size: 100,
-                          color: AppTheme.primaryGreen,
-                        );
-                      },
+                    child: Icon(
+                      Icons.eco,
+                      size: 100,
+                      color: AppTheme.primaryGreen,
                     ),
                   ),
                 ),
-                SizedBox(height: 40),
+                const SizedBox(height: 40),
                 Text(
                   AppConstants.appName,
                   style: Theme.of(context).textTheme.displayMedium?.copyWith(
@@ -102,12 +96,10 @@ class _SplashScreenState extends State<SplashScreen>
                       ),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Text(
                   AppConstants.appTagline,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyLarge?.copyWith(color: AppTheme.textGrey),
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppTheme.textGrey),
                   textAlign: TextAlign.center,
                 ),
               ],

@@ -1,9 +1,13 @@
-import 'package:flutter/material.dart';
-import '../models/user.dart';
-import '../services/auth_service.dart';
+import 'package:flutter/foundation.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../model/user.dart'; // Changed from '../model/user.dart'
+import '../services/auth_services.dart'; // Add this import
 
 class UserProvider with ChangeNotifier {
-  final AuthService _authService = AuthService();
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final AuthService _authService = AuthService(); // Add this
   UserModel? _user;
   bool _isLoading = false;
   String? _errorMessage;
@@ -13,12 +17,32 @@ class UserProvider with ChangeNotifier {
   String? get errorMessage => _errorMessage;
   bool get isAuthenticated => _user != null;
 
+  UserProvider() {
+    _initializeUser();
+  }
+
+  Future<void> _initializeUser() async {
+    setLoading(true);
+    _user = await getCurrentUserData();
+    setLoading(false);
+  }
+
+  void setLoading(bool loading) {
+    _isLoading = loading;
+    notifyListeners();
+  }
+
+  void setError(String? message) {
+    _errorMessage = message;
+    notifyListeners();
+  }
+
   Future<void> loadUser() async {
     _isLoading = true;
     notifyListeners();
 
     try {
-      _user = await _authService.getCurrentUserData();
+      _user = await getCurrentUserData();
       _errorMessage = null;
     } catch (e) {
       _errorMessage = e.toString();
@@ -38,21 +62,28 @@ class UserProvider with ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
 
-    final result = await _authService.signUp(
-      email: email,
-      password: password,
-      role: role,
-      phoneNumber: phoneNumber,
-    );
+    try {
+      final result = await _authService.signUp(
+        email: email,
+        password: password,
+        role: role,
+        phoneNumber: phoneNumber,
+      );
 
-    _isLoading = false;
-
-    if (result['success']) {
-      _user = result['user'];
-      notifyListeners();
-      return true;
-    } else {
-      _errorMessage = result['message'];
+      if (result['success']) {
+        _user = result['user'];
+        _isLoading = false;
+        notifyListeners();
+        return true;
+      } else {
+        _errorMessage = result['message'];
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
+    } catch (e) {
+      _errorMessage = e.toString();
+      _isLoading = false;
       notifyListeners();
       return false;
     }
@@ -63,16 +94,26 @@ class UserProvider with ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
 
-    final result = await _authService.signIn(email: email, password: password);
+    try {
+      final result = await _authService.signIn(
+        email: email,
+        password: password,
+      );
 
-    _isLoading = false;
-
-    if (result['success']) {
-      _user = result['user'];
-      notifyListeners();
-      return true;
-    } else {
-      _errorMessage = result['message'];
+      if (result['success']) {
+        _user = result['user'];
+        _isLoading = false;
+        notifyListeners();
+        return true;
+      } else {
+        _errorMessage = result['message'];
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
+    } catch (e) {
+      _errorMessage = e.toString();
+      _isLoading = false;
       notifyListeners();
       return false;
     }
@@ -85,8 +126,16 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<UserModel?> getCurrentUserData() async {
+    return await _authService.getCurrentUserData();
+  }
+
   void clearError() {
     _errorMessage = null;
     notifyListeners();
+  }
+
+  Future<bool> resetPassword(String email) async {
+    return await _authService.resetPassword(email);
   }
 }

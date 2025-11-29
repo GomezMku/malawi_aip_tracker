@@ -17,9 +17,11 @@ class HomePage extends StatelessWidget {
     return Consumer<UserProvider>(
       builder: (context, userProvider, child) {
         if (userProvider.isLoading) {
-          return const Scaffold(
+          return Scaffold(
             body: Center(
-              child: CircularProgressIndicator(color: AppTheme.primaryGreen),
+              child: CircularProgressIndicator(
+                color: AppTheme.primaryGreen,
+              ),
             ),
           );
         }
@@ -55,8 +57,11 @@ class HomePage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.error_outline,
-                  size: 80, color: AppTheme.errorRed),
+              const Icon(
+                Icons.error_outline,
+                size: 80,
+                color: AppTheme.errorRed,
+              ),
               const SizedBox(height: 24),
               Text(
                 'Invalid User Role',

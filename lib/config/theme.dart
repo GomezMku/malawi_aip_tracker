@@ -44,7 +44,7 @@ class AppTheme {
           backgroundColor: primaryGreen,
           foregroundColor: white,
           padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: const RoundedRectangleBorder(
+          shape: RoundedRectangleBorder( // Removed const
             borderRadius: BorderRadius.circular(12),
           ),
           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
@@ -55,21 +55,21 @@ class AppTheme {
         fillColor: white,
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        border: OutlineInputBorder(
+        border: OutlineInputBorder( // Removed const
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
         ),
-        enabledBorder: OutlineInputBorder(
+        enabledBorder: OutlineInputBorder( // Removed const
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
         ),
-        focusedBorder: const OutlineInputBorder(
+        focusedBorder: OutlineInputBorder( // Removed const
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: primaryGreen, width: 2),
+          borderSide: const BorderSide(color: primaryGreen, width: 2),
         ),
-        errorBorder: const OutlineInputBorder(
+        errorBorder: OutlineInputBorder( // Removed const
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: errorRed),
+          borderSide: const BorderSide(color: errorRed),
         ),
       ),
     );

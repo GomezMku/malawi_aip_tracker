@@ -4,8 +4,8 @@ import '../../config/theme.dart';
 import '../../providers/user.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/input_field.dart';
+import '../farmer/dashboard.dart';
 import 'signup.dart';
-import 'forgot_password.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -18,6 +18,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _showWrongPassword = false;
 
   @override
   void dispose() {
@@ -27,24 +28,26 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _handleLogin() async {
+    setState(() {
+      _showWrongPassword = false;
+    });
+
     if (_formKey.currentState!.validate()) {
       final userProvider = Provider.of<UserProvider>(context, listen: false);
-
+      
       final success = await userProvider.signIn(
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
 
       if (success && mounted) {
-        // TODO: Replace with appropriate dashboard based on user role
-        // For now, show a success message and stay on login screen
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Login successful!'),
-            backgroundColor: AppTheme.primaryGreen,
-          ),
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const FarmerDashboard()),
         );
       } else if (mounted) {
+        setState(() {
+          _showWrongPassword = true;
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(userProvider.errorMessage ?? 'Login failed'),
@@ -88,23 +91,31 @@ class _LoginScreenState extends State<LoginScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        'Log in',
-                        style: TextStyle(
-                          color: AppTheme.primaryGreen,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
+                    Column(
+                      children: [
+                        TextButton(
+                          onPressed: () {},
+                          child: const Text(
+                            'Log in',
+                            style: TextStyle(
+                              color: AppTheme.primaryGreen,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
-                      ),
+                        Container(
+                          height: 3,
+                          width: 60,
+                          color: AppTheme.primaryGreen,
+                        ),
+                      ],
                     ),
                     const SizedBox(width: 32),
                     TextButton(
                       onPressed: () {
                         Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (_) => const SignUpScreen()),
+                          MaterialPageRoute(builder: (_) => const SignUpScreen()),
                         );
                       },
                       child: const Text(
@@ -116,12 +127,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ],
-                ),
-                Container(
-                  height: 2,
-                  width: 80,
-                  color: AppTheme.primaryGreen,
-                  margin: const EdgeInsets.only(left: 0, right: 200),
                 ),
                 const SizedBox(height: 40),
                 InputField(
@@ -154,22 +159,46 @@ class _LoginScreenState extends State<LoginScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 12),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const ForgotPasswordScreen(),
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    if (_showWrongPassword)
+                      const Text(
+                        'Wrong password',
+                        style: TextStyle(
+                          color: AppTheme.errorRed,
+                          fontSize: 14,
                         ),
-                      );
-                    },
-                    child: const Text(
-                      'Forgot password?',
-                      style: TextStyle(color: Colors.blue, fontSize: 14),
+                      )
+                    else
+                      const SizedBox(),
+                    TextButton(
+                      onPressed: () {
+                        // Show forgot password dialog
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Forgot Password'),
+                            content: const Text('Password reset functionality coming soon.'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        'Forgot password?',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 14,
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
                 const SizedBox(height: 32),
                 Consumer<UserProvider>(
@@ -192,8 +221,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (_) => const SignUpScreen()),
+                          MaterialPageRoute(builder: (_) => const SignUpScreen()),
                         );
                       },
                       child: const Text(

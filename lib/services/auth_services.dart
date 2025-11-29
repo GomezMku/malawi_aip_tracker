@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../models/user.dart';
+import '../model/user.dart'; // Fixed import path
 import '../config/app_constants.dart';
 
 class AuthService {
@@ -59,10 +59,7 @@ class AuthService {
     } on FirebaseAuthException catch (e) {
       return {'success': false, 'message': _getErrorMessage(e.code)};
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'An error occurred: ${e.toString()}',
-      };
+      return {'success': false, 'message': 'An error occurred: ${e.toString()}'};
     }
   }
 
@@ -90,10 +87,7 @@ class AuthService {
     } on FirebaseAuthException catch (e) {
       return {'success': false, 'message': _getErrorMessage(e.code)};
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'An error occurred: ${e.toString()}',
-      };
+      return {'success': false, 'message': 'An error occurred: ${e.toString()}'};
     }
   }
 

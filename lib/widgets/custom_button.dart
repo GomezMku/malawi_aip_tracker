@@ -9,7 +9,7 @@ class CustomButton extends StatelessWidget {
   final Color? textColor;
 
   const CustomButton({
-    super.key, // Fixed: using super parameter instead of Key? key
+    super.key,
     required this.text,
     required this.onPressed,
     this.isLoading = false,
@@ -27,10 +27,10 @@ class CustomButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor ?? AppTheme.primaryGreen,
           foregroundColor: textColor ?? AppTheme.white,
-          disabledBackgroundColor: AppTheme.primaryGreen.withOpacity(0.6),
+          disabledBackgroundColor: _getDisabledColor(),
         ),
         child: isLoading
-            ? SizedBox(
+            ? const SizedBox(
                 height: 20,
                 width: 20,
                 child: CircularProgressIndicator(
@@ -40,6 +40,15 @@ class CustomButton extends StatelessWidget {
               )
             : Text(text),
       ),
+    );
+  }
+
+  Color _getDisabledColor() {
+    final baseColor = backgroundColor ?? AppTheme.primaryGreen;
+    // Use the non-deprecated approach for alpha calculation
+    return Color.alphaBlend(
+      baseColor.withAlpha(((baseColor.a * 255.0).round() * 0.6).round() & 0xff),
+      Colors.transparent,
     );
   }
 }

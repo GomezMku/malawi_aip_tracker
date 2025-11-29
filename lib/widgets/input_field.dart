@@ -40,7 +40,7 @@ class _InputFieldState extends State<InputField> {
             context,
           ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         TextFormField(
           controller: widget.controller,
           obscureText: widget.isPassword && _obscureText,
